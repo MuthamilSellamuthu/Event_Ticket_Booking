@@ -1,0 +1,13 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - ../../base
+patches:
+    - path: backend-service.yaml
+    - path: frontend-E:\PROJECTS\event-ticket-booking\frontend-persistentVolumeClaim.yaml
+    - path: frontend-service.yaml
+    - path: mongo-service.yaml
+    - path: prometheus-E:\PROJECTS\event-ticket-booking\monitoring\prometheus.yml-persistentVolumeClaim.yaml
+    - path: prometheus-service.yaml

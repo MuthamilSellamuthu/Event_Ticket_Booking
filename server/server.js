@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const client = require('prom-client');   // ⭐ ADD THIS
 
 // Load env vars
 dotenv.config();
@@ -10,6 +11,16 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// ⭐ PROMETHEUS METRICS
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics();
+
+// Metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
+});
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
@@ -43,6 +54,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

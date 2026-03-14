@@ -1,0 +1,8 @@
+#! 0-event-ticket-booking-namespace.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: event-ticket-booking
+    labels:
+        com.docker.compose.project: event-ticket-booking
