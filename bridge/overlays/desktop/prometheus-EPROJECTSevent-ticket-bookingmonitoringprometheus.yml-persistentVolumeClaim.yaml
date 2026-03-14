@@ -1,9 +1,0 @@
-#! prometheus-E:\PROJECTS\event-ticket-booking\monitoring\prometheus.yml-persistentVolumeClaim.yaml
-# Generated code, do not edit
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-    name: prometheus-e--projects-event-ticket-booking-monitoring-prometheus-yml
-    namespace: event-ticket-booking
-spec:
-    storageClassName: "hostpath" # see docker/desktop-storage-provisioner
