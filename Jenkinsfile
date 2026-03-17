@@ -6,9 +6,9 @@ pipeline {
     }
 
     stages {
+
         stage('Clone Repository') {
             steps {
-                // In a real Jenkins environment, this is usually handled by the plugin or SCM configuration
                 checkout scm
             }
         }
@@ -20,30 +20,40 @@ pipeline {
             }
         }
 
+        stage('Clean Old Containers') {
+            steps {
+                echo 'Stopping and removing old containers...'
+                bat 'docker compose down --remove-orphans'
+            }
+        }
+
         stage('Run Containers') {
             steps {
-                echo 'Cleaning up old containers and starting services...'
-                bat 'docker compose down'
-                bat 'docker compose up -d'
+                echo 'Starting services using Docker Compose...'
+                bat 'docker compose up -d --build'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                echo 'Verifying services...'
+                echo 'Checking running containers...'
                 bat 'docker ps'
-                // Use curl (comes with Git for Windows) or powershell
-                bat 'curl -f http://localhost:5000/api/health || exit 1'
+
+                echo 'Checking backend health endpoint...'
+                bat 'curl -f http://localhost:5000/api/health'
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline execution finished.'
+        success {
+            echo 'Deployment successful 🎉'
         }
         failure {
-            echo 'Pipeline failed. Check the logs.'
+            echo 'Pipeline failed ❌ Check logs in Jenkins.'
+        }
+        always {
+            echo 'Pipeline execution finished.'
         }
     }
 }
