@@ -1,7 +1,6 @@
 services:
   backend:
     build: ./backend
-    container_name: event-backend
     ports:
       - "5000:5000"
     environment:
@@ -14,7 +13,6 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: event-frontend
     ports:
       - "3000:80"
     depends_on:
@@ -24,7 +22,6 @@ services:
 
   mongodb:
     image: mongo:latest
-    container_name: event-mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -34,7 +31,6 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: event-prometheus
     ports:
       - "9090:9090"
     volumes:
