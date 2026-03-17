@@ -37,7 +37,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 echo 'Waiting for services to initialize (10s)...'
-                bat 'timeout /t 10'
+                sleep time: 10, unit: 'SECONDS'
 
                 echo 'Checking running containers...'
                 bat 'docker ps'
