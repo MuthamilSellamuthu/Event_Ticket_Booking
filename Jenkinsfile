@@ -16,22 +16,23 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 echo 'Building Docker images...'
-                sh 'docker-compose build'
+                bat 'docker compose build'
             }
         }
 
         stage('Run Containers') {
             steps {
                 echo 'Starting services using Docker Compose...'
-                sh 'docker-compose up -d'
+                bat 'docker compose up -d'
             }
         }
 
         stage('Verify Deployment') {
             steps {
                 echo 'Verifying services...'
-                sh 'docker ps'
-                sh 'curl -f http://localhost:5000/api/health || exit 1'
+                bat 'docker ps'
+                // Use curl (comes with Git for Windows) or powershell
+                bat 'curl -f http://localhost:5000/api/health || exit 1'
             }
         }
     }
