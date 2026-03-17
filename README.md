@@ -1,117 +1,71 @@
-# 🎟️ EventPulse – Event Ticket Booking Platform
+# Event Ticket Booking Platform - DevOps Implementation
 
-A full-stack event ticket booking platform built with React, Node.js/Express, and MongoDB.
+This project implements a multi-container architecture for an Event Ticket Booking Platform using Docker Compose, automated with Jenkins, and monitored with Prometheus.
 
-## 🚀 Tech Stack
+## Project Structure
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, React Router v6, Axios, QRCode.react |
-| Backend | Node.js, Express.js |
-| Database | MongoDB with Mongoose |
-| Auth | JWT (JSON Web Tokens) |
-| QR Code | qrcode (npm) |
-
-## 📁 Project Structure
-
-```
-event-ticket-booking/
-├── client/          # React Frontend
-├── server/          # Node.js + Express Backend
-├── database/        # DB seed scripts & schema docs
-└── docs/            # API documentation
+```text
+event-ticket-booking
+├── frontend
+│   ├── Dockerfile
+│   ├── src/
+│   └── package.json
+├── backend
+│   ├── Dockerfile
+│   ├── server.js
+│   └── package.json
+├── docker-compose.yml
+├── Jenkinsfile
+├── prometheus.yml
+└── README.md
 ```
 
-## ⚡ Quick Start
+## Prerequisites
 
-### Prerequisites
-- Node.js v18+
-- MongoDB (local or Atlas URI)
+- [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/install/)
+- [Jenkins](https://www.jenkins.io/download/) (for automation)
+- [Git](https://git-scm.com/downloads)
 
-### 1. Clone & Install
+## Step-by-Step Guide
+
+### 1. Building and Running with Docker Compose
+
+To start the entire application including the frontend, backend, MongoDB database, and Prometheus monitoring:
 
 ```bash
-# Install server dependencies
-cd server && npm install
-
-# Install client dependencies
-cd ../client && npm install
+docker-compose up -d --build
 ```
 
-### 2. Configure Environment
+- **Frontend UI**: Accessible at `http://localhost:3000`
+- **Backend API**: Accessible at `http://localhost:5000`
+- **MongoDB**: Runs on `mongodb:27017` (internal name)
+- **Prometheus**: Accessible at `http://localhost:9090`
 
-```bash
-# In /server, create .env
-cp .env.example .env
-# Edit with your MongoDB URI and JWT secret
-```
+### 2. Monitoring with Prometheus
 
-### 3. Seed Database (optional)
+Once the containers are running, you can access the Prometheus dashboard to view metrics:
 
-```bash
-cd server
-node utils/seed.js
-```
+1. Open `http://localhost:9090`.
+2. Go to **Status > Targets** to verify that the `backend` service is being scraped successfully.
+3. Use the **Graph** tab to query metrics like `http_requests_total`.
 
-### 4. Run Development Servers
+### 3. Automating with Jenkins
 
-```bash
-# Terminal 1 – Backend (port 5000)
-cd server && npm run dev
+1. Open your Jenkins dashboard.
+2. Create a new **Pipeline** job.
+3. In the **Pipeline** section, select **Pipeline script from SCM**.
+4. Choose **Git** and provide your repository URL.
+5. Set the **Script Path** to `Jenkinsfile`.
+6. Click **Save** and then **Build Now**.
 
-# Terminal 2 – Frontend (port 3000)
-cd client && npm start
-```
+The pipeline will:
+- Clone your repository.
+- Build the Docker images.
+- Start the services using Docker Compose.
+- Verify the deployment.
 
-## 🔑 API Endpoints
+## Troubleshooting
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login & get JWT |
-
-### Events
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/events` | List all events |
-| GET | `/api/events/:id` | Get single event |
-| POST | `/api/events` | Create event (admin) |
-
-### Bookings
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/bookings` | Create booking |
-| GET | `/api/bookings/user/:userId` | Get user's bookings |
-
-### Payment
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/payment` | Process payment (simulation) |
-
-## 🪑 Seat Selection
-
-Seats are stored per event in a grid format (e.g., A1–E10). The backend marks selected seats as `booked` atomically to prevent double-booking.
-
-## 🎫 QR Code Tickets
-
-After successful payment, a QR code is generated containing:
-```json
-{
-  "ticketId": "...",
-  "userId": "...",
-  "eventId": "...",
-  "seats": ["A1", "A2"],
-  "issuedAt": "2025-..."
-}
-```
-
-## 🐳 Docker (Future)
-
-```bash
-docker-compose up --build
-```
-
-## 📄 License
-
-MIT
+- **Port Conflicts**: Ensure ports `5000`, `27017`, and `9090` are not in use by other applications.
+- **Docker Permissions**: Run commands with `sudo` if necessary (on Linux).
+- **Network Issues**: Ensure Docker can pull images from Docker Hub.
