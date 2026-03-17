@@ -22,7 +22,8 @@ pipeline {
 
         stage('Run Containers') {
             steps {
-                echo 'Starting services using Docker Compose...'
+                echo 'Cleaning up old containers and starting services...'
+                bat 'docker compose down'
                 bat 'docker compose up -d'
             }
         }
