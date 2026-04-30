@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Event = require('../models/Event');
+const { ticketsBookedCounter } = require('../utils/metrics');
 
 // @desc    Create a booking (seats reserved, payment pending)
 // @route   POST /api/bookings
@@ -36,6 +37,9 @@ exports.createBooking = async (req, res) => {
       totalPrice,
       paymentStatus: 'pending',
     });
+
+    // Track successfully booked tickets in Prometheus
+    ticketsBookedCounter.inc(seats.length);
 
     res.status(201).json({ success: true, booking });
   } catch (error) {

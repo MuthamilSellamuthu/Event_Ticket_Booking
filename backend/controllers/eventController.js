@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const { eventsCreatedCounter } = require('../utils/metrics');
 
 // @desc    Get all events
 // @route   GET /api/events
@@ -51,6 +52,10 @@ exports.getEvent = async (req, res) => {
 exports.createEvent = async (req, res) => {
   try {
     const event = await Event.create({ ...req.body, createdBy: req.user.id });
+    
+    // Track newly created events in Prometheus
+    eventsCreatedCounter.inc();
+
     res.status(201).json({ success: true, event });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

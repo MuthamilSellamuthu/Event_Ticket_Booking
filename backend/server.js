@@ -22,10 +22,28 @@ app.get('/metrics', async (req, res) => {
   res.end(await client.register.metrics());
 });
 
+// Import custom metrics
+const { httpRequestCounter } = require('./utils/metrics');
+
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Prometheus HTTP request tracking middleware
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    // Only track API requests, skip root or other assets if needed
+    if (req.path.startsWith('/api')) {
+      httpRequestCounter.inc({
+        method: req.method,
+        route: req.path,
+        status_code: res.statusCode
+      });
+    }
+  });
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
