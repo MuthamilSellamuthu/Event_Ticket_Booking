@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import QRCodeGenerator from '../components/QRCodeGenerator';
 
 const TicketPage = () => {
   const { bookingId } = useParams();
-  const navigate = useNavigate();
   const [ticket, setTicket] = useState(null);
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
